@@ -7,7 +7,7 @@ async fn main() {
         .route("/", get(|| async { "meow meow rust rust xP" }))
         .route("/hello/:visitor", get(greet_visitor));
 
-    let port = std::env::var("PORT").unwrap_or_else(|_| "3001".into());
+    let port = std::env::var("PORT").unwrap_or_else(|_| "3000".into());
     let listener = TcpListener::bind(format!("0.0.0.0:{port}")).await.unwrap();
     serve(listener, app).await.unwrap();
 }
