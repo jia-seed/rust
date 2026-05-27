@@ -1,0 +1,2 @@
+fn(axum::extract::Path<String>) -> impl Future<Output = Json<Greeting>> {greet_visitor}
+fn(axum::extract::Path<String>) -> impl Future<Output = Json<Greeting>> {greet_visitor}: Handler<_, _>

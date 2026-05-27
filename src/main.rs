@@ -1,49 +1,17 @@
-use axum::{
-    routing::{get, post},
-    Router,
-    Json,
-};
-use serde::{Deserialize, Serialize};
-use std::net::SocketAddr;
+use axum::{extract::Path, Router, routing::get, serve};
+use tokio::net::TcpListener;
 
 #[tokio::main]
 async fn main() {
-    // Build the Axum application
     let app = Router::new()
-        .route("/", get(homepage))
-        .route("/about", get(about))
-        .route("/contact", post(contact));
-    // Define the address for the server
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    println!("Server running at http://{}", addr);
-    // Run the Axum server
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+        .route("/", get(|| async { "meow meow rust rust xP" }))
+        .route("/hello/:visitor", get(greet_visitor));
+
+    let port = std::env::var("PORT").unwrap_or_else(|_| "3001".into());
+    let listener = TcpListener::bind(format!("0.0.0.0:{port}")).await.unwrap();
+    serve(listener, app).await.unwrap();
 }
-// Homepage handler
-async fn homepage() -> &'static str {
-    "meow meow rust rust!"
-}
-// About page handler
-async fn about() -> &'static str {
-    "This is the About Page of the Rust Website."
-}
-// Contact form handler
-#[derive(Deserialize)]
-struct ContactForm {
-    name: String,
-    message: String,
-}
-#[derive(Serialize)]
-struct ResponseMessage {
-    status: String,
-    message: String,
-}
-async fn contact(Json(payload): Json<ContactForm>) -> Json<ResponseMessage> {
-    Json(ResponseMessage {
-        status: "success".to_string(),
-        message: format!("Thanks for reaching out, {}!", payload.name),
-    })
+
+async fn greet_visitor(Path(visitor): Path<String>) -> String {
+    format!("Hello, {visitor}!")
 }
