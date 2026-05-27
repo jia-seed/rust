@@ -8,7 +8,10 @@ async fn main() {
         .route("/hello/:visitor", get(greet_visitor));
 
     let port = std::env::var("PORT").unwrap_or_else(|_| "3000".into());
-    let listener = TcpListener::bind(format!("0.0.0.0:{port}")).await.unwrap();
+    let addr = format!("0.0.0.0:{port}");
+    println!("catsite listening on {addr}");
+    
+    let listener = TcpListener::bind(&addr).await.unwrap();
     serve(listener, app).await.unwrap();
 }
 
