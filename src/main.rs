@@ -6,7 +6,6 @@ async fn main() {
     let app = Router::new()
         .route("/", get(|| async { "meow meow rust rust xP" }))
         .route("/favicon.ico", get(favicon))
-        .route("/favicon-v2.ico", get(favicon));
 
     let port = std::env::var("PORT").unwrap_or_else(|_| "3000".into());
     let addr = format!("0.0.0.0:{port}");
